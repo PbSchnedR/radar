@@ -1,0 +1,66 @@
+# Textes du rapport, écrits par nous. « radar report » les assemble dans rapport.md.
+# Règle : chaque url citée (dans « sources » ou dans un texte) doit exister dans data/items.json,
+# sinon « radar report » refuse d'écrire le rapport.
+# Toutes les affirmations ci-dessous sont dans les notes de version des urls citées (à revérifier en ouvrant chaque lien).
+
+tendances:
+  - titre: "MCP devient la prise standard des CLI d'IA"
+    constat: >
+      Entre le 21 et le 27 octobre 2026, Claude Code et Codex ont tous deux livré des correctifs et ajouts autour de MCP :
+      outils MCP utilisables par les sous-agents et commandes « claude mcp » corrigées (Claude Code v2.1.311),
+      fichier de config MCP protégé du sandbox (v2.1.309), sessions avec beaucoup d'outils MCP (v2.1.306) ;
+      côté Codex, connexions MCP d'entreprise authentifiées (0.164.0), annulation des requêtes MCP distantes
+      et mise à jour du SDK @modelcontextprotocol/sdk en version 1.32.0 (0.165.0).
+    sources:
+      - https://github.com/anthropics/claude-code/releases/tag/v2.1.311
+      - https://github.com/anthropics/claude-code/releases/tag/v2.1.309
+      - https://github.com/anthropics/claude-code/releases/tag/v2.1.306
+      - https://github.com/openai/codex/releases/tag/rust-v0.164.0
+      - https://github.com/openai/codex/releases/tag/rust-v0.165.0
+    impact: "Les serveurs MCP que je configure servent dans Claude Code comme dans Codex : du temps passé sur MCP profite aux deux outils."
+    anticiper: "Mettre à jour les deux outils : ces versions corrigent des bugs MCP que je pourrais croiser (sous-agents, commandes claude mcp)."
+    compatibilite: "Gratuit. Rien à développer, seulement de la configuration."
+    statut: retenue
+    pourquoi: "Deux éditeurs indépendants vont dans le même sens, la même semaine, dans leurs dépôts officiels."
+
+  - titre: "Data : la mémoire des agents reste en fichiers, mais se structure"
+    constat: >
+      Claude Code garde sa mémoire dans des fichiers texte (MEMORY.md, CLAUDE.md) et corrige leurs effets de bord :
+      contenu périmé après compaction, messages d'historique enregistrés dans le désordre (v2.1.311),
+      CLAUDE.md trop gros chargé seulement en partie, historiques que jq n'arrivait plus à lire (v2.1.309).
+      Codex passe à une « memory v2 » activée par défaut, avec import des mémoires d'autres agents (0.165.0),
+      et retrouve désormais les historiques compressés à la reprise d'une session (0.164.0).
+    sources:
+      - https://github.com/anthropics/claude-code/releases/tag/v2.1.311
+      - https://github.com/anthropics/claude-code/releases/tag/v2.1.309
+      - https://github.com/openai/codex/releases/tag/rust-v0.165.0
+      - https://github.com/openai/codex/releases/tag/rust-v0.164.0
+    impact: "Mes fichiers CLAUDE.md sont bien lus par l'outil, mais un CLAUDE.md trop gros n'est chargé qu'en partie (v2.1.309)."
+    anticiper: "Garder mes CLAUDE.md courts. Si j'utilise Codex, regarder ce que change sa memory v2."
+    compatibilite: "Gratuit. Une habitude à prendre, pas un développement."
+    statut: retenue
+    pourquoi: "Touche directement ma façon de travailler avec ces outils."
+
+  - titre: "Le sandbox des commandes se durcit"
+    constat: >
+      Claude Code corrige des fuites de son sandbox : fichiers de démarrage du shell exécutés hors du sandbox,
+      règles d'interdiction d'écriture contournées par lien symbolique (v2.1.309). Codex durcit ses contrôles
+      sandbox sur macOS, masque les identifiants dans les commandes Bash distantes (0.164.0) et ferme une faille
+      de validation d'url de marketplace (0.165.0).
+    sources:
+      - https://github.com/anthropics/claude-code/releases/tag/v2.1.309
+      - https://github.com/openai/codex/releases/tag/rust-v0.164.0
+      - https://github.com/openai/codex/releases/tag/rust-v0.165.0
+    impact: "Quand l'IA lance des commandes sur ma machine, c'est le sandbox qui me protège, et il avait des trous."
+    anticiper: "Garder le sandbox activé et mettre à jour les outils pour récupérer ces correctifs."
+    compatibilite: "Budget : 0 €. Technique : un réglage à respecter, pas un développement."
+    statut: retenue
+    pourquoi: "Risque de sécurité direct sur ma machine."
+
+# Page 2 (facultative) : une note de recommandation. Laissez tout vide pour ne pas l'afficher.
+question: ""
+recommandation: ""
+impact: { perimetre: "", budget: "", delais: "" }
+risques: ""
+plan_b: ""
+prochaine_etape: ""

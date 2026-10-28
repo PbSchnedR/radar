@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Thème clair uniquement : les styles « dark: » ne s'appliquent plus selon le système,
+   seulement sous une classe .dark que l'interface n'utilise pas. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+}
+
+/* Le rapport rendu depuis rapport.md */
+.rapport {
+  @apply max-w-[72ch] text-[15px] leading-relaxed text-zinc-700 dark:text-zinc-300;
+}
+.rapport h1 { @apply mb-1 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50; }
+.rapport h2 { @apply mt-10 mb-3 border-t border-zinc-200 pt-6 text-xl font-semibold tracking-tight text-zinc-900 dark:border-zinc-800 dark:text-zinc-50; }
+.rapport h3 { @apply mt-6 mb-2 text-base font-semibold text-zinc-900 dark:text-zinc-100; }
+.rapport h4 { @apply mt-6 mb-2 font-semibold text-zinc-900 dark:text-zinc-100; }
+.rapport p { @apply my-3; }
+.rapport ul { @apply my-3 list-disc space-y-1.5 pl-5; }
+.rapport a { @apply text-emerald-700 underline decoration-emerald-700/30 underline-offset-2 hover:decoration-emerald-700 dark:text-emerald-400 dark:decoration-emerald-400/30; }
+.rapport em { @apply text-zinc-500 dark:text-zinc-400; }
+.rapport strong { @apply font-semibold text-zinc-900 dark:text-zinc-100; }
+.rapport table { @apply my-4 w-full text-sm; }
+.rapport th, .rapport td { @apply border-b border-zinc-200 px-2 py-1.5 text-left dark:border-zinc-800; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

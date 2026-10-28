@@ -1,0 +1,142 @@
+axes:      [cli-ia, securite, cgu-ia]          # 3 à 5 thèmes, au moins 3 types de veille
+mots_cles: ["claude code", "codex", "MCP"]     # ce qui déclenche une capture
+ignorer:   ["crypto", "NFT"]                   # ce qu'on décide de ne PAS surveiller
+# Types de source (champs obligatoires entre parenthèses ; « nom », « limite », « categorie », « type_veille » sont facultatifs) :
+#   releases   (depot)               versions d'un dépôt GitHub, via gh api
+#   flux       (url)                 flux RSS ou Atom : blog, actualités, https://github.com/<depot>/releases.atom
+#   hackernews (requete)             articles Hacker News contenant la requête ; « points_min » facultatif ; « une: true » = page d'accueil (requete facultative)
+#   failles    (paquet, ecosysteme)  failles connues (base OSV) ; ecosysteme : npm, PyPI, Go, Maven, crates.io… ; « version » facultative
+#   page       (url)                 page sans flux : une info est créée quand son texte change
+#   depot      (depot)               chiffres d'un dépôt GitHub (étoiles, forks, licence), une mesure par jour
+#   npm        (paquet)              téléchargements npm sur 7 jours, une mesure par semaine
+# « famille » sert à filtrer dans l'interface (blog, agregat, presse, securite…) ; sans elle, la famille est le type de source.
+# « categorie » donne les points de fiabilité : officielle, institution, presse, communaute, social.
+sources:
+  # --- GitHub : versions
+  - { type: releases, famille: github, depot: anthropics/claude-code, nom: "Dépôt GitHub officiel anthropics/claude-code", limite: 10, categorie: officielle }
+  - { type: releases, famille: github, depot: openai/codex, categorie: officielle }
+  - { type: releases, famille: github, depot: google-gemini/gemini-cli, nom: "GitHub google-gemini/gemini-cli", categorie: officielle }
+  - { type: releases, famille: github, depot: modelcontextprotocol/typescript-sdk, nom: "GitHub MCP TypeScript SDK", categorie: officielle }
+  - { type: releases, famille: github, depot: ollama/ollama, nom: "GitHub ollama/ollama", categorie: officielle }
+  - { type: releases, famille: github, depot: microsoft/vscode, nom: "GitHub microsoft/vscode", limite: 5, categorie: officielle }
+  - { type: releases, famille: github, depot: vitejs/vite, nom: "GitHub vitejs/vite", limite: 5, categorie: officielle }
+  - { type: releases, famille: github, depot: nodejs/node, nom: "GitHub nodejs/node", limite: 5, categorie: officielle }
+  - { type: releases, famille: github, depot: kubernetes/kubernetes, nom: "GitHub kubernetes/kubernetes", limite: 5, categorie: officielle }
+  - { type: releases, famille: github, depot: docker/compose, nom: "GitHub docker/compose", limite: 5, categorie: officielle }
+  # --- GitHub : chiffres (étoiles, licence)
+  - { type: depot, famille: chiffres, depot: anthropics/claude-code, nom: "Stats GitHub claude-code", categorie: officielle }
+  - { type: depot, famille: chiffres, depot: openai/codex, nom: "Stats GitHub codex", categorie: officielle }
+  - { type: depot, famille: chiffres, depot: google-gemini/gemini-cli, nom: "Stats GitHub gemini-cli", categorie: officielle }
+  - { type: depot, famille: chiffres, depot: ollama/ollama, nom: "Stats GitHub ollama", categorie: officielle }
+  - { type: depot, famille: chiffres, depot: modelcontextprotocol/servers, nom: "Stats GitHub MCP servers", categorie: officielle }
+  # --- npm : téléchargements
+  - { type: npm, famille: chiffres, paquet: "@anthropic-ai/claude-code", nom: "npm @anthropic-ai/claude-code", categorie: officielle }
+  - { type: npm, famille: chiffres, paquet: "@openai/codex", nom: "npm @openai/codex", categorie: officielle }
+  - { type: npm, famille: chiffres, paquet: "@google/gemini-cli", nom: "npm @google/gemini-cli", categorie: officielle }
+  - { type: npm, famille: chiffres, paquet: "@modelcontextprotocol/sdk", nom: "npm @modelcontextprotocol/sdk", categorie: officielle }
+  # --- Blogs officiels
+  - { type: flux, famille: blog, url: "https://openai.com/news/rss.xml", nom: "Blog OpenAI", categorie: officielle }
+  - { type: flux, famille: blog, url: "https://github.blog/feed/", nom: "Blog GitHub", categorie: officielle }
+  - { type: flux, famille: blog, url: "https://huggingface.co/blog/feed.xml", nom: "Blog Hugging Face", categorie: officielle }
+  - { type: flux, famille: blog, url: "https://deepmind.google/blog/rss.xml", nom: "Blog Google DeepMind", categorie: officielle }
+  - { type: flux, famille: blog, url: "https://kubernetes.io/feed.xml", nom: "Blog Kubernetes", limite: 10, categorie: officielle }
+  - { type: flux, famille: blog, url: "https://www.docker.com/blog/feed/", nom: "Blog Docker", categorie: officielle }
+  - { type: flux, famille: blog, url: "https://blog.cloudflare.com/rss/", nom: "Blog Cloudflare", categorie: officielle }
+  - { type: flux, famille: blog, url: "https://aws.amazon.com/blogs/aws/feed/", nom: "Blog AWS News", categorie: officielle }
+  - { type: flux, famille: blog, url: "https://nodejs.org/en/feed/blog.xml", nom: "Blog Node.js", categorie: officielle }
+  # --- Blogs d'experts
+  - { type: flux, famille: blog, url: "https://simonwillison.net/atom/everything/", nom: "Blog Simon Willison", categorie: communaute }
+  - { type: flux, famille: blog, url: "https://martinfowler.com/feed.atom", nom: "Blog Martin Fowler", categorie: communaute }
+  - { type: flux, famille: blog, url: "https://newsletter.pragmaticengineer.com/feed", nom: "The Pragmatic Engineer", categorie: communaute }
+  - { type: flux, famille: blog, url: "https://www.latent.space/feed", nom: "Latent Space", categorie: communaute }
+  # --- Agrégats de flux
+  - { type: flux, famille: agrégat, url: "https://lobste.rs/t/ai.rss", nom: "Lobsters : IA", categorie: communaute }
+  - { type: flux, famille: agrégat, url: "https://lobste.rs/rss", nom: "Lobsters : une", categorie: communaute }
+  - { type: flux, famille: agrégat, url: "https://dev.to/feed/tag/ai", nom: "dev.to : IA", categorie: communaute }
+  - { type: hackernews, famille: agrégat, une: true, points_min: 200, nom: "Hacker News : une (200+ points)", categorie: communaute }
+  - { type: flux, famille: social, url: "https://www.reddit.com/r/LocalLLaMA/top/.rss?t=week", nom: "Reddit r/LocalLLaMA", categorie: social }
+  # --- Presse
+  - { type: flux, famille: presse, url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", nom: "The Verge : IA", categorie: presse }
+  - { type: flux, famille: presse, url: "https://arstechnica.com/ai/feed/", nom: "Ars Technica : IA", categorie: presse }
+  - { type: flux, famille: presse, url: "https://techcrunch.com/category/artificial-intelligence/feed/", nom: "TechCrunch : IA", categorie: presse }
+  - { type: flux, famille: presse, url: "https://next.ink/feed/", nom: "Next (FR)", categorie: presse }
+  # --- Sécurité
+  - { type: flux, famille: sécurité, url: "https://www.cert.ssi.gouv.fr/alerte/feed/", nom: "CERT-FR : alertes", type_veille: sécurité, categorie: institution }
+  - { type: flux, famille: sécurité, url: "https://www.cert.ssi.gouv.fr/avis/feed/", nom: "CERT-FR : avis", type_veille: sécurité, categorie: institution }
+  - { type: flux, famille: sécurité, url: "https://www.cisa.gov/cybersecurity-advisories/all.xml", nom: "CISA : avis", type_veille: sécurité, categorie: institution }
+  - { type: flux, famille: sécurité, url: "https://krebsonsecurity.com/feed/", nom: "Krebs on Security", type_veille: sécurité, categorie: presse }
+  - { type: flux, famille: sécurité, url: "https://feeds.feedburner.com/TheHackersNews", nom: "The Hacker News (sécurité)", type_veille: sécurité, categorie: presse }
+  # --- Légal et réglementaire
+  - { type: flux, famille: légal, url: "https://www.cnil.fr/fr/rss.xml", nom: "CNIL : actualités", type_veille: légal, categorie: institution }
+  - { type: flux, famille: légal, url: "https://artificialintelligenceact.substack.com/feed", nom: "Newsletter EU AI Act", type_veille: légal, categorie: communaute }
+  - { type: flux, famille: légal, url: "https://digital-strategy.ec.europa.eu/en/rss.xml", nom: "Commission européenne : numérique", type_veille: légal, categorie: institution }
+  # --- Hacker News (mot-clé)
+  - { type: hackernews, famille: communauté, requete: "claude code", nom: "Hacker News : claude code", limite: 15, categorie: communaute }
+  - { type: hackernews, famille: communauté, requete: "MCP server", nom: "Hacker News : MCP server", points_min: 3, categorie: communaute }
+  - { type: hackernews, famille: communauté, requete: "coding agent", nom: "Hacker News : coding agent", points_min: 10, categorie: communaute }
+  # --- Failles (base OSV)
+  - { type: failles, famille: failles, paquet: express, ecosysteme: npm, nom: "Failles npm : express", type_veille: sécurité, categorie: institution }
+  - { type: failles, famille: failles, paquet: vite, ecosysteme: npm, nom: "Failles npm : vite", type_veille: sécurité, categorie: institution }
+  - { type: failles, famille: failles, paquet: next, ecosysteme: npm, nom: "Failles npm : next", type_veille: sécurité, categorie: institution }
+  - { type: failles, famille: failles, paquet: axios, ecosysteme: npm, nom: "Failles npm : axios", type_veille: sécurité, categorie: institution }
+  - { type: failles, famille: failles, paquet: requests, ecosysteme: PyPI, nom: "Failles PyPI : requests", type_veille: sécurité, categorie: institution }
+  - { type: failles, famille: failles, paquet: django, ecosysteme: PyPI, nom: "Failles PyPI : django", type_veille: sécurité, categorie: institution }
+  # --- Pages sans flux
+  - { type: page, famille: page, url: "https://www.anthropic.com/legal/consumer-terms", nom: "CGU Anthropic (grand public)", type_veille: légal, categorie: officielle }
+  - { type: page, famille: page, url: "https://www.anthropic.com/pricing", nom: "Tarifs Anthropic", categorie: officielle }
+  - { type: page, famille: page, url: "https://github.com/features/copilot/plans", nom: "Tarifs GitHub Copilot", categorie: officielle }
+frequence: { failles: quotidien, tendances: hebdo }
+livrable:  "top 10 du lundi + alerte si faille"
+
+# Alertes : une NOUVELLE info déclenche une alerte si elle contient un de ces mots,
+# ou si elle vient d'un des types de source listés. La 1re collecte d'une source n'alerte pas.
+alertes:
+  mots: ["cve", "vulnerab", "breaking change", "deprecated", "mcp"]
+  sources: [failles, page]       # toute nouvelle faille et tout changement de page
+  notification: true             # notification Windows en plus du terminal et de l'interface
+
+# Collecte automatique : « radar planifier » crée une tâche Windows qui lance collect + score
+# toutes les N heures (de 1 à 23). « radar deplanifier » la supprime.
+planification: { toutes_les_heures: 6 }
+
+# Le type de chaque info (un seul par info). Si la source a un « type_veille », il s'impose.
+# Sinon, c'est le PREMIER type de cette liste dont un mot apparaît dans le titre ou l'extrait :
+# mettez les types précis avant les types larges.
+types_veille:
+  - { nom: sécurité, mots: ["cve", "vulnerab", "faille", "security", "sécurité", "exploit"] }
+  - { nom: légal,    mots: ["cgu", "terms of service", "conditions d'utilisation", "rgpd", "gdpr", "ai act"] }
+  - { nom: devops,   mots: ["docker", "kubernetes", "terraform", "github actions", "deploy", "déploiement", "bazel", "pipeline"] }
+  - { nom: ia,       mots: ["llm", "model", "modèle", "agent", "claude", "gpt", "codex", "mcp", "prompt", "gemini", "ollama", "openai", "anthropic", "hugging face", "deepmind", "artificial intelligence", "intelligence artificielle", "machine learning"] }
+
+# Brique 4 : une info reçoit une étiquette si son titre ou son extrait contient un des « mots ».
+# Une étiquette écrite seule (ex. - mcp) se déclenche sur son propre nom.
+etiquettes:
+  - { nom: mcp,        mots: ["mcp", "model context protocol"] }
+  - { nom: sécurité,   mots: ["security", "sécurité", "vulnerab", "cve", "sandbox", "oidc", "oauth"] }
+  - { nom: plugins,    mots: ["plugin", "skill", "hook"] }
+  - { nom: cloud,      mots: ["bedrock", "vertex", "foundry", "aws", "gcp", "azure"] }
+  - { nom: data,       mots: ["memory", "mémoire", "sqlite", "database", "storage", "transcript"] }
+  - { nom: correctifs, mots: ["bug fix", "fixed"] }
+seuil: 5          # fiabilité minimale pour qu'une info soit « retenue », sinon « ecartee »
+
+# Brique 3 : chaque règle donne « points » si TOUTES ses conditions « si » sont vraies.
+# Conditions possibles :
+#   source: { champ: valeur }     un champ de la source dans « sources » (ex. categorie, vend_produit)
+#   moins_de_jours: N             publiée il y a moins de N jours
+#   champ_rempli: auteur          ce champ de l'info n'est pas vide
+#   contient: [mots]              au moins un de ces mots (dans titre, url, extrait ; ou dans les champs listés par « dans »)
+#   ne_contient_pas: [mots]       aucun de ces mots (mêmes champs)
+#   dans: [champs]                limite contient / ne_contient_pas à ces champs
+#   confirmee_ailleurs: true      une info d'une AUTRE source contient le même mot-clé (liste mots_cles)
+regles_score:
+  - { nom: "source officielle",       points: 3,  si: { source: { categorie: officielle } } }
+  - { nom: "source institution",      points: 2,  si: { source: { categorie: institution } } }
+  - { nom: "source presse",           points: 2,  si: { source: { categorie: presse } } }
+  - { nom: "source communauté",       points: 1,  si: { source: { categorie: communaute } } }
+  - { nom: "source réseau social",    points: 0,  si: { source: { categorie: social } } }
+  - { nom: "publiée il y a < 6 mois", points: 1,  si: { moins_de_jours: 183 } }
+  - { nom: "auteur identifié",        points: 1,  si: { champ_rempli: auteur, ne_contient_pas: ["[bot]"], dans: [auteur] } }
+  - { nom: "source ou méthode citée", points: 1,  si: { contient: ["http://", "https://", "(#", "source :", "source:", "methodology", "méthode"], dans: [extrait] } }
+  - { nom: "confirmée par une autre source", points: 1, si: { confirmee_ailleurs: true } }
+  - { nom: "lien affilié ou partenaire", points: -2, si: { contient: ["affiliate", "affilié", "partenaire", "partner", "sponsored", "sponsorisé", "?ref=", "utm_"] } }
+  - { nom: "l'auteur vend le produit",   points: -2, si: { source: { vend_produit: true } } }
